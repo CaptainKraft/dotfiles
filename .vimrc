@@ -1,74 +1,95 @@
-filetype plugin on
-syntax on
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+" Spacebar as leader
+nnoremap <space> <nop>
+let mapleader=" "
 
-"" allow j and k to scroll over lines in a single long line
-nmap j gj
-nmap k gk
-
-"" center after movement
-nmap <C-]> <C-]>zz
-nmap <C-T> <C-T>zz
-nmap <C-d> <C-d>zz
-nmap <C-u> <C-u>zz
-nmap n nzz
-nmap N Nzz
-nmap gg ggzz
+" Page up and page down remaps
 nmap <C-J> <C-d>
 nmap <C-K> <C-u>
 
-"" navigating splits
+" Use shift to navigate splits
 nmap <S-H> <C-W><C-H>
 nmap <S-J> <C-W><C-J>
 nmap <S-K> <C-W><C-K>
 nmap <S-L> <C-W><C-L>
 
-"" spell check
-nmap <F12> <ESC>:setlocal spell spelllang=en_us<CR>
-nmap <F11> <ESC>:setlocal nospell<CR>
+" Allow j and k to scroll over lines in a single long line
+nmap j gj
+nmap k gk
 
-"" building and stepping through errors
+" Building and stepping through errors
 nnoremap <C-b> <C-0> : :w<CR>:make<CR>:cw<CR>
 nnoremap <S-b> <C-0> : :make run<CR>
 nnoremap <C-n> :cnext<CR>
 nnoremap <C-p> :cprev<CR>
-nnoremap <ESC> :ccl<CR>
 
-colorscheme wombat256
+" Semicolon to clear any highlighting
 nnoremap ; :nohl<CR>
-set nocompatible
-set t_Co=256
 
-set pastetoggle=<F2>
+" Use tab instead of % to match brackets
+nnoremap <tab> %
+vnoremap <tab> %
+
+" Highlight text that was just pasted
+nnoremap <leader>v V']
+
+" Syntax highlighting
+syntax on
+set termguicolors
+colorscheme wombat
+
+" Persistent undo history
+set undofile
+set undodir=~/.vim/undodir
+
+" Use the system clipboard
 set clipboard=unnamedplus
-set mouse=ar
+
+" Show line number stuff to make navigation clearer
 set cursorline
 set relativenumber
 set nu
-set undofile
-set undodir=~/.config/nvim/undodir
-set autoindent
-set smartindent
-set tabstop=4
-set expandtab
-set shiftwidth=4
-set enc=utf-8
-set fenc=utf-8
-set termencoding=utf-8
+
+" All lowercase will ignore, but any uppercase will be case sensitive
+set ignorecase
+set smartcase
+
+" Default to global search and replace
+set gdefault
+
+" Highlight search results
+set incsearch
 set showmatch
-set splitbelow
-set splitright
+set hlsearch
 
-let g:netrw_banner=0    " disable banner
-let g:netrw_altv=1      " open splits to right
-let g:netrw_liststyle=3 " tree view
+" Show a few lines above or below the cursor when at the top or bottom of the screen
+set scrolloff=3
 
-"" finding files
+" Fuzzy searching for files
 set path+=**
 set wildmenu
-set wildignore=*.o,*~,*/cmake-build*,*.out,*/.git/*
+set wildignore=*.o,*~,*/cmake-build*,*.out,*/.git/*,*.so,*.lib
 
-"" clang-format
+" Show line,column at bottom right
+set ruler
+
+" Sane indenting
+set autoindent
+set smartindent
+
+" Sane mouse interaction
+set mouse=ar
+
+" Sane tabs
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+
+" File tree config
+let g:netrw_banner=0
+let g:netrw_liststyle=3
+
+" clang-format
 let g:clang_format#code_style = "llvm"
 let g:clang_format#style_options = {
     \ "SortIncludes" : "false",
@@ -77,21 +98,8 @@ let g:clang_format#style_options = {
     \ "BreakBeforeBraces" : "Mozilla"}
 nmap <C-\> : :ClangFormat<CR>
 
-"" Odin
+" Odin error formatting
 set errorformat+=%f\(%l:%c\)\ %m
-autocmd FileType odin :set makeprg=make
-autocmd FileType odin nnoremap <buffer> <C-b> : :w<CR>:make run .<CR>
-
-"" Rust
-autocmd FileType rust :compiler cargo
-autocmd FileType rust nnoremap <buffer> <C-b> : :w<CR>:make build<CR>:cw<CR>
-autocmd FileType rust nnoremap <buffer> <S-b> : :w<CR>:make run<CR>:cw<CR>
-let g:rustfmt_command = "rustfmt"
-autocmd FileType rust nnoremap <C-\> : :RustFmt<CR>
 
 "" CTags
-command! MakeTags !ctags -R .
-
-" END
-packloadall
-silent! helptags ALL
+command! Ctags !ctags -R .
